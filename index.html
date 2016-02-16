@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="myApp">
 <head>
   <title>Angular Friends</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body>
+<body ng-controller="mainCtrl">
 
   <h1>The <strong>facebook</strong> Friend Machine</h1>
 
@@ -14,22 +14,24 @@
     <form class="form-inline searchForm" role="form">
       <div class="form-group">
 
-        <input class="form-control" placeholder="Search Anything About Your Friends">
+        <input class="form-control" placeholder="Search Anything About Your Friends" ng-model="pepsFilter" >
         <!-- STEP 5: Get rid of the one above when you uncomment the below-->
           <!--
         <input class="form-control" placeholder="Search Name">
         <input class="form-control" placeholder="Search Location">
           -->
 
-        <select class="input-medium">
-          <option>Name</option>
-          <option>#Friends</option>
-          <option>City</option>
-          <option>State</option>
-          <option>Country</option>
-        </select>
+        <select ng-model="orderAttribute" ng-options="option.value as option.label for option in searchAttrOptions" class="input-medium">
+            </select>
+            
+          <!--<option ng-selected="order('name')">name</option>
+          <option ng-selected="order('friend_count')">#Friends</option>
+          <option ng-selected="order('current_location.city')">City</option>
+          <option ng-selected="order('current_location.state')">State</option>
+          <option ng-selected="order('current_location.country')">Country</option>
+        </select>-->
 
-        <select class="input-medium">
+        <select class="input-medium" ng-model="orderReverse">
           <option value="+">Descending</option>
           <option value="-">Ascending</option>
         </select>
@@ -38,21 +40,21 @@
     </form>
 
     <ul>
-      <li class='friend'>
-        <img class="profile-pic" src='http://placebear.com/50/50.jpg'>
+      <li class='friend' ng-repeat="peps in friends | filter: pepsFilter | orderBy: orderReverse + orderAttribute">
+        <img class="profile-pic" src="{{peps.pic_square}}">
 
-        <h3>Cali Fornia</h3>
+        <h3>{{peps.name}}</h3>
 
         <div class="location">
-          Location: New Port Beach, California, United States
+          Location: {{peps.current_location.city}}, {{peps.current_location.state}}, {{peps.current_location.country}}
         </div>
 
         <div class="status">
-          Status: I hate the snow. I wish I was on the beach right now!!! <span class="hashtag">#ihateprovo</span>
+          Status: {{peps.status.message}} <div class="timeStamp">{{peps.status.time | date :"EEEE MM/dd/yyyy 'at' h:mma"  : timezone}}</div>
         </div>
 
         <div class="num-friends">
-          Friends: 1,367
+          Friends: {{peps.friend_count}}
         </div>
       </li>
     </ul>
